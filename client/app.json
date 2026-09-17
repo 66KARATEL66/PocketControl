@@ -18,7 +18,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.kychan69.PocketControl"
+      "package": "com.kychan69.PocketControl",
+      "permissions": ["android.permission.CAMERA"]
     },
     "web": {
       "output": "static",

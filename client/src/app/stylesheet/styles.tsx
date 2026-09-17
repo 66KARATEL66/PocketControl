@@ -121,6 +121,66 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         color: "white"
     },
+
+    scannerOverlay: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+
+        backgroundColor: "rgba(0, 0, 0, 0.85)",
+
+        alignItems: "center",
+        justifyContent: "center",
+
+        zIndex: 100,
+    },
+
+    scannerContainer: {
+        width: width * 0.85,
+        aspectRatio: 1,
+
+        borderWidth: 2,
+        borderColor: "#E6EDF3",
+        borderRadius: 16,
+
+        overflow: "hidden",
+
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    scannerText: {
+        position: "absolute",
+
+        top: -50,
+
+        color: "#E6EDF3",
+        fontSize: 18,
+        fontWeight: "500",
+    },
+
+    scannerCloseButton: {
+        marginTop: 40,
+
+        width: width * 0.5,
+        height: 50,
+
+        backgroundColor: "#21262D",
+
+        borderWidth: 1,
+        borderColor: "#30363D",
+        borderRadius: 10,
+
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    scannerCloseText: {
+        color: "#E6EDF3",
+        fontSize: 16,
+    },
 });
 
 export const iconStyles = {

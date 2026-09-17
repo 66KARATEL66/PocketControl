@@ -1,0 +1,10 @@
+[
+    {
+        "id": 0,
+        "command": "volume_up"
+    },
+    {
+        "id": 1,
+        "command": "volume_down"
+    }
+]

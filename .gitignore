@@ -46,3 +46,6 @@ example
 .idea/
 .vscode/
 *.iml
+
+.venv/
+__pycache__/
