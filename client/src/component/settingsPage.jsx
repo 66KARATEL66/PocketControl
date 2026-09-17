@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native'
-import { styles } from "./stylesheet/styles"
+import { styles } from "../stylesheet/styles"
 import { DataScanner } from 'react-native-data-scanner'
 import * as pako from "pako"
 import { getUniqueId } from 'react-native-device-info'

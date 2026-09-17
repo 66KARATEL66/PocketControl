@@ -1,4 +1,4 @@
-import { styles } from './stylesheet/styles'
+import { styles } from '../stylesheet/styles'
 import { View, Text } from "react-native"
 
 export function MouseControlPage()
