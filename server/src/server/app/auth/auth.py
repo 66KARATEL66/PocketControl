@@ -1,19 +1,8 @@
-from uuid import uuid4
 import json
 import zlib
 import qrcode
-import server.app.auth.network as network
 import io
-
-
-rand_token = str(uuid4())
-server_ip = network.get_server_url()
-
-AUTHDATA = {
-    "token": rand_token,
-    "ip": server_ip,
-    "request": "/api/v1/auth"
-}
+from server.data.authDATA import AUTHDATA
 
 def compress_and_encode(data):
     # print(data["token"])

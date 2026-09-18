@@ -5,6 +5,8 @@ import * as pako from "pako"
 import { getUniqueId } from 'react-native-device-info'
 import { useState } from 'react'
 
+const DATA
+
 export function SettingsPage() {
     const [authStatus, setAuthStatus] = useState(null);
 
