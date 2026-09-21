@@ -1,9 +1,9 @@
-import { styles, iconStyles } from '../stylesheet/styles'
+import { styles } from '../stylesheet/styles'
 import { Pressable, Text } from 'react-native'
 
-export function Button({item}) {
+export function Button({ item, onPress }) {
     return(
-        <Pressable style={styles.scrollViewerButton} onPress={item.onPressHandler || null}>
+        <Pressable style={styles.scrollViewerButton} onPress={onPress || item.onPressHandler}>
             <Text style={styles.scrollViewerText}>{item.title}</Text>
         </Pressable>
     )

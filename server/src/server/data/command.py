@@ -1,9 +1,14 @@
 from pydantic import BaseModel
 from typing import Any
 
-class Command(BaseModel):
+class CommandReturn(BaseModel):
     id: int
-    device_id: str
     isSolid: bool
     command: str
+    args: dict[str, Any] = {}
+
+class Command(BaseModel):
+    id: int
+    command: str
+    device_id: str
     args: dict[str, Any] = {}

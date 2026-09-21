@@ -25,7 +25,7 @@ def execute_command(command_name: str, args: dict):
     handler(**args)
 
 # get commmands list
-@app.post("/api/v1/getCommands")
+@app.get("/api/v1/getCommands")
 def getCommands(request: Request):
     logger.info(f"IP: {request.client.host} POST: Get Commands")
     if(DATA_COMMANDS):

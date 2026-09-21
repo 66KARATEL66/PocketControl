@@ -1,21 +1,25 @@
 import { getUniqueId } from 'react-native-device-info'
+import { DataScanner } from 'react-native-data-scanner'
+import * as pako from "pako"
 
-export var DATA;
+export let DATA = null;
 
-async function scanBarcode(handleAuthResult) {
+export async function scanBarcode(handleAuthResult) {
+    if (typeof handleAuthResult !== "function") {
+        throw new TypeError("handleAuthResult must be a function");
+    }
+
     const barcode = await DataScanner.scanBarcode({
         targetFormats: ['qr'],
         enableAutoZoom: true
     });
 
     if (barcode.value) {
-        console.log ("QR is scanned")
         await auth(barcode.value, handleAuthResult);
     }
 }
 
-async function auth(barcode, setAuthStatus)
-{
+async function auth(barcode, handleAuthResult) {
     const data = decodeAuthData(barcode);
 
     const url = data.ip + data.authRequest;
@@ -25,7 +29,6 @@ async function auth(barcode, setAuthStatus)
         device_id: await getUniqueId()
     };
 
-    console.log("Sent post request")
     const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify(body),
@@ -34,27 +37,25 @@ async function auth(barcode, setAuthStatus)
         }
     });
 
-    console.log("AUTH STATUS:", response.status);
+    if (!response.ok) {
+        throw new Error(`Authentication failed with status ${response.status}`);
+    }
 
     const result = await response.json();
 
-    console.log("AUTH RESPONSE:", result);
-
-    if(result.success)
-    {
+    if (result.success) {
         DATA = {
             commandRequest: data.ip + data.commandRequest,
             getCommandsRequest: data.ip + data.getCommandsRequest,
         }
     }
 
-    setAuthStatus(result);
+    handleAuthResult(result);
 
     return result.success;
 }
 
-function decodeAuthData(hex)
-{
+function decodeAuthData(hex) {
     const bytes = new Uint8Array(
         hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16))
     );
@@ -62,8 +63,6 @@ function decodeAuthData(hex)
     const decompressed = pako.inflate(bytes);
 
     const jsonString = new TextDecoder().decode(decompressed);
-
-    console.log("QR decoded");
 
     return JSON.parse(jsonString);
 }

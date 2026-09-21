@@ -1,21 +1,29 @@
 import { DATA as urlList } from './auth'
 
-export var COMMANDS_DATA;
+export let commandsData = [];
 
-async function getCommands()
-{
-    try{
+export async function getCommands() {
+    if (!urlList?.getCommandsRequest) {
+        throw new Error("Authentication is required before loading commands");
+    }
+
+    try {
+        // console.log("Fetching commands from:", urlList.getCommandsRequest);
         const response = await fetch(urlList.getCommandsRequest);
 
-        if(!response.ok)
+        if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        COMMANDS_DATA = await response.json();
-        console.log("Get commands success");
-        return (true)
+        const result = await response.json();
+        if (result.status !== "ok" || !Array.isArray(result.commands)) {
+            throw new Error("The server returned an invalid commands response");
+        }
+
+        commandsData = result.commands;
+        return commandsData;
+    } catch (error) {
+        console.error("Failed to fetch commands:", error);
+        throw error;
     }
-    catch (error) {
-        console.error('Failed to fetch data: ', error);
-        return (false)
-    }  
 }

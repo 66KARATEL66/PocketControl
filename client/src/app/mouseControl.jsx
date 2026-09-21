@@ -1,4 +1,4 @@
-import MouseControlPage from "../component/mouseControlPage";
+import { MouseControlPage } from "../component/mouseControlPage";
 
 export default function MouseControl()
 {

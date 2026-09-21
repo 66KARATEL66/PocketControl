@@ -2,11 +2,11 @@
     {
         "id": 0,
         "command": "volume_up",
-        "isSolid": "true"
+        "isSolid": true
     },
     {
         "id": 1,
         "command": "volume_down",
-        "isSolid": "true"
+        "isSolid": true
     }
 ]
