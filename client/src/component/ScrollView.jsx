@@ -1,97 +1,82 @@
-import { View, FlatList, Alert } from 'react-native'
-import { useState } from 'react'
-import { Button } from './Button';
-import { styles } from '../stylesheet/styles'
-import { router } from 'expo-router';
-import * as commands from '../data/commands'
-import { DATA as authData } from '../data/auth'
-import { useAuth } from '@/data/context';
-import { getUniqueId } from 'react-native-device-info'
+import { Alert, FlatList, View } from "react-native";
+import { router } from "expo-router";
+import { Button } from "./Button";
+import { styles } from "../stylesheet/styles";
+import { executeCommand } from "../data/commands";
+import { useAuth } from "../data/context";
 
 export function ScrollView() {
-    const { authStatus } = useAuth();
-    const [isCommandsLoaded, setIsCommandsLoaded] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const { session, commands, status, refreshCommands } = useAuth();
 
-    const onPressAuthHandler = () => {
-        router.push("/settings");
-    }
+    const onPressCommand = async (command) => {
+        if (command.isSolid === false) {
+            if (
+                typeof command.command !== "string" ||
+                !/^[A-Za-z0-9_-]+$/.test(command.command)
+            ) {
+                Alert.alert("Invalid command", "This command does not have a valid screen name.");
+                return;
+            }
 
-    const onPressGetCommandsHandler = async () => {
-        setIsLoading(true);
-
-        try {
-            await commands.getCommands();
-            setIsCommandsLoaded(true);
-        } catch (error) {
-            Alert.alert("Unable to load commands", error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    const onPressCommandHandler = async (item) => {
-        try {
-            const response = await fetch(authData.commandRequest, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    id: item.id,
-                    command: item.command,
-                    args: item.args ?? null,
-                    device_id: await getUniqueId(),
-                }),
+            router.push({
+                pathname: "/command/[commandName]",
+                params: { commandName: command.command },
             });
+            return;
+        }
 
-            if (!response.ok) {
-                throw new Error(`Command failed with status ${response.status}`);
-            }
-
-            const result = await response.json();
-
-            if (result.status !== "ok") {
-                Alert.alert("Command failed", result.reason || "The command was rejected");
-            }
+        try {
+            await executeCommand(session, command);
         } catch (error) {
+            if (error.code === "auth_required") {
+                await refreshCommands();
+            }
             Alert.alert("Command failed", error.message);
         }
+    };
+
+    const onRefreshCommands = async () => {
+        try {
+            await refreshCommands();
+        } catch (error) {
+            Alert.alert("Unable to refresh commands", error.message);
+        }
+    };
+
+    if (status === "loading") {
+        return <Button item={{ title: "Connecting..." }} />;
     }
 
-    return(
-        <View>
-            {!authStatus && (
-                <Button item={{ title: "To start using the commands - Auth firstly", onPressHandler: onPressAuthHandler }} />
-            )}
-            {authStatus && !isCommandsLoaded && (
-                <Button
-                    item={{
-                        title: isLoading ? "Loading commands..." : "Get Commands",
-                        onPressHandler: isLoading ? undefined : onPressGetCommandsHandler,
-                    }}
-                />
-            )}
-            {isCommandsLoaded && (
-                <FlatList
-                    style={styles.scrollView}
-                    data={commands.commandsData}
-                    keyExtractor={item => item.id.toString()}
-                    numColumns={2}
-                    renderItem={({ item }) => {
-                        if(item.isSolid) {
-                            return (
-                                <Button item={{ title: item.command, onPressHandler: () => onPressCommandHandler(item) }} />
-                            );
-                        }
-                        else {
-                            return (
-                                <Button item={{ title: item.command, onPressHandler: () => router.push({pathname: "/" + item.command, params: {item: JSON.stringify(item)}})}} />
-                            )
-                        }
-                    }}
-                />
-            )}
-        </View> 
-    )
+    if (status !== "authenticated") {
+        return (
+            <Button
+                item={{
+                    title: "Connect to a server",
+                    onPressHandler: () => router.push("/settings"),
+                }}
+            />
+        );
+    }
+
+    return (
+        <View style={styles.commandListContainer}>
+            <Button
+                item={{ title: "Refresh commands", onPressHandler: onRefreshCommands }}
+            />
+            <FlatList
+                style={styles.scrollView}
+                data={commands}
+                keyExtractor={(item) => item.id.toString()}
+                numColumns={2}
+                renderItem={({ item }) => (
+                    <Button
+                        item={{
+                            title: item.command,
+                            onPressHandler: () => onPressCommand(item),
+                        }}
+                    />
+                )}
+            />
+        </View>
+    );
 }

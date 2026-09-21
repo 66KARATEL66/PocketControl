@@ -1,15 +1,17 @@
-from pydantic import BaseModel
-from typing import Any
+from typing import Any, Literal
 
-class CommandReturn(BaseModel):
+from pydantic import BaseModel, Field
+
+
+class CommandDefinition(BaseModel):
     id: int
-    isSolid: bool
     command: str
-    transport: str
-    args: dict[str, Any] = {}
+    transport: Literal["http", "websocket"]
+    isSolid: bool
+    args: dict[str, Any] = Field(default_factory=dict)
 
-class Command(BaseModel):
-    id: int
+
+class CommandRequest(BaseModel):
     command: str
     device_id: str
-    args: dict[str, Any] = {}
+    args: dict[str, Any] = Field(default_factory=dict)

@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from "../stylesheet/styles";
 import { Header } from "../component/Header";
-import { useState } from 'react'
 import { ContextProvider } from '../data/context'
 
 export default function Layout() {

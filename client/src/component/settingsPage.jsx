@@ -1,36 +1,41 @@
-import { Alert, View, Text, Pressable } from 'react-native'
-import { styles } from "../stylesheet/styles"
-import * as auth from '../data/auth'
-import { useAuth } from '../data/context'
+import { Alert, Pressable, Text, View } from "react-native";
+import { styles } from "../stylesheet/styles";
+import { useAuth } from "../data/context";
 
 export function SettingsPage() {
-    const {authStatus, setAuthStatus} = useAuth();
+    const { authStatus, status, connect, logout } = useAuth();
 
-    const handleAuthResult = (result) => {
-        setAuthStatus(result.success);
+    const onPressConnect = async () => {
+        try {
+            await connect();
+            Alert.alert("Connected", "The server connection is ready.");
+        } catch (error) {
+            Alert.alert("Authentication failed", error.message);
+        }
+    };
 
-        Alert.alert(result.success ? "Auth success" : "Auth failed");
+    const onPressLogout = async () => {
+        await logout();
+        Alert.alert("Disconnected", "Stored authentication has been cleared.");
     };
 
     return (
         <View style={styles.settingsPage}>
+            <Text style={styles.settingsStatus}>
+                {status === "loading"
+                    ? "Connecting..."
+                    : authStatus
+                        ? "Connected"
+                        : "Disconnected"}
+            </Text>
             <Pressable
                 style={styles.settingsPageButton}
-                onPress={async () => {
-                    try {
-                        await auth.scanBarcode(handleAuthResult);
-                    } catch (error) {
-                        Alert.alert("Authentication failed", error.message);
-                    }
-                }}
+                onPress={authStatus ? onPressLogout : onPressConnect}
+                disabled={status === "loading"}
             >
                 <Text style={styles.settingsPageText}>
-                    {authStatus ? "Reconnect" : "Connect"}
+                    {authStatus ? "Disconnect" : "Connect"}
                 </Text>
-            </Pressable>
-
-            <Pressable style={styles.settingsPageButton}>
-                <Text style={styles.settingsPageText}>About</Text>
             </Pressable>
         </View>
     );
