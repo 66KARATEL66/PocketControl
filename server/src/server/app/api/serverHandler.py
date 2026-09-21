@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocketDisconnect
 from server.app.services.logger import logger
 import server.app.core.commands as commands
 from server.data.command import Command
@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from fastapi import Request
 from server.app.services.whitelistJsonHandler import tokenVerification, readFile
 from server.app.services.commandJsonHandler import DATA as DATA_COMMANDS
+from fastapi import WebSocket
 
 app = FastAPI()
 
@@ -79,4 +80,35 @@ def handle_command(command: Command, request: Request):
         "status": "ok"
     }
 
+# WebSocket endpoint
+@app.websocket("/api/v1/commandWS")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    logger.info(f"WebSocket connection accepted from {websocket.client.host}")
+
+    try:
+        while True:
+            data = await websocket.receive_json()
+            # logger.info(f"Received data from WebSocket: {data}")
+
+            command_name = data.get("command")
+            args = data.get("args", {})
+
+            try:
+                execute_command(command_name, args)
+                await websocket.send_json({"success": True})
+                # logger.info(f"Executed command '{command_name}' successfully")
+
+            except ValueError as e:
+                logger.warning(e)
+                await websocket.send_json({"success": False, "error": str(e)})
+
+    except WebSocketDisconnect:
+        logger.info("WebSocket client disconnected")
+
+    except Exception as e:
+        logger.error(f"WebSocket error: {e}")
+
+    finally:
+        logger.info("WebSocket connection closed")
     

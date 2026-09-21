@@ -25,7 +25,7 @@ export function SettingsPage() {
                 }}
             >
                 <Text style={styles.settingsPageText}>
-                    {authStatus ? "Connected" : "Connect"}
+                    {authStatus ? "Reconnect" : "Connect"}
                 </Text>
             </Pressable>
 

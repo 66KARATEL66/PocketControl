@@ -2,11 +2,32 @@
     {
         "id": 0,
         "command": "volume_up",
+        "transport": "http",
         "isSolid": true
     },
     {
         "id": 1,
         "command": "volume_down",
+        "transport": "http",
         "isSolid": true
+    },
+    {
+        "id": 2,
+        "command": "open_url",
+        "transport": "http",
+        "isSolid": true,
+        "args": {
+            "url": "https://www.google.com"
+        }
+    },
+    {
+        "id": 3,
+        "command": "mouseControl",
+        "transport": "websocket",
+        "isSolid": false,
+        "args": {
+            "x": null,
+            "y": null
+        }
     }
 ]

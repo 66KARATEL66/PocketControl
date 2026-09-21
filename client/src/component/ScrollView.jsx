@@ -78,12 +78,18 @@ export function ScrollView() {
                     data={commands.commandsData}
                     keyExtractor={item => item.id.toString()}
                     numColumns={2}
-                    renderItem={({ item }) => (
-                        <Button
-                            item={{ title: item.command }}
-                            onPress={() => onPressCommandHandler(item)}
-                        />
-                    )}
+                    renderItem={({ item }) => {
+                        if(item.isSolid) {
+                            return (
+                                <Button item={{ title: item.command, onPressHandler: () => onPressCommandHandler(item) }} />
+                            );
+                        }
+                        else {
+                            return (
+                                <Button item={{ title: item.command, onPressHandler: () => router.push({pathname: "/" + item.command, params: {item: JSON.stringify(item)}})}} />
+                            )
+                        }
+                    }}
                 />
             )}
         </View> 

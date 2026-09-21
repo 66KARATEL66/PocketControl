@@ -46,6 +46,7 @@ async function auth(barcode, handleAuthResult) {
     if (result.success) {
         DATA = {
             commandRequest: data.ip + data.commandRequest,
+            commandWebSocketRequest: data.ip + data.commandWebSocketRequest,
             getCommandsRequest: data.ip + data.getCommandsRequest,
         }
     }

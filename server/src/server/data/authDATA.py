@@ -9,5 +9,6 @@ AUTHDATA = {
     "ip": server_ip,
     "authRequest": "/api/v1/auth",
     "commandRequest": "/api/v1/command",
+    "commandWebSocketRequest": "/api/v1/commandWS",
     "getCommandsRequest": "/api/v1/getCommands"
 }

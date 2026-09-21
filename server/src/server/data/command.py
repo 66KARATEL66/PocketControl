@@ -5,6 +5,7 @@ class CommandReturn(BaseModel):
     id: int
     isSolid: bool
     command: str
+    transport: str
     args: dict[str, Any] = {}
 
 class Command(BaseModel):

@@ -81,7 +81,7 @@ export const styles = StyleSheet.create({
     },
 
     trackZoneText: {
-        fontSize: 16,
+        fontSize: 18,
         color: "white",
         textAlign: "center"
     },
@@ -93,6 +93,13 @@ export const styles = StyleSheet.create({
         backgroundColor: "#2e343d",
         alignContent: "center",
         justifyContent: "center"
+    },
+
+    trackZoneActive: {
+        flex: 1,
+        alignContent: "center",
+        justifyContent: "center",
+        margin: 10,
     },
 
     settingsPage: {
