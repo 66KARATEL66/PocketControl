@@ -5,7 +5,11 @@ import { Ionicons } from "@expo/vector-icons";
 
 export function Header() {
     const onPress = () => {
-        router.push("/settings")
+        router.push({
+            pathname: "/settings",
+            params: {
+            }
+        })
     }
 
     return(

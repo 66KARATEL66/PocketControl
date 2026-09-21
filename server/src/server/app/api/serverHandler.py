@@ -5,6 +5,7 @@ from server.data.command import Command
 from pydantic import BaseModel
 from fastapi import Request
 from server.app.services.whitelistJsonHandler import tokenVerification, readFile
+from server.app.services.commandJsonHandler import DATA as DATA_COMMANDS
 
 app = FastAPI()
 
@@ -22,6 +23,20 @@ def execute_command(command_name: str, args: dict):
         raise ValueError(f"Unknown command: {command_name}")
 
     handler(**args)
+
+# get commmands list
+@app.post("/api/v1/getCommands")
+def getCommands(request: Request):
+    logger.info(f"IP: {request.client.host} POST: Get Commands")
+    if(DATA_COMMANDS):
+        logger.info("Commands return")
+        return {
+                "commands": DATA_COMMANDS,
+                "status": "ok",
+            }
+
+    logger.info("Get commands unsuccess")
+    return { "status": "error"}
 
 # auth
 @app.post("/api/v1/auth")
@@ -47,8 +62,8 @@ async def auth(request_data: AuthRequest, request: Request):
 
 # GET POST
 @app.post("/api/v1/command")
-def handle_command(command: Command):
-    logger.info(f"POST {command}")
+def handle_command(command: Command, request: Request):
+    logger.info(f"IP: {request.client.host} POST {command}")
 
     if command.device_id not in whitelist:
         return {"status": "error", "reason": "auth_required"}

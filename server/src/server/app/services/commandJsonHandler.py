@@ -1,15 +1,12 @@
 import json
 from pydantic import BaseModel
 from pathlib import Path
+from server.data.command import Command
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 COMMAND_FILE = BASE_DIR / "data" / "command.json"
 
 DATA = []
-
-class Command(BaseModel):
-    id: int
-    command: str
 
 def json_decoder():
     try:

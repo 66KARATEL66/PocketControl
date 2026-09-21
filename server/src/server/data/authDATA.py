@@ -7,5 +7,7 @@ server_ip = network.get_server_url()
 AUTHDATA = {
     "token": rand_token,
     "ip": server_ip,
-    "request": "/api/v1/auth"
+    "authRequest": "/api/v1/auth",
+    "commandRequest": "/api/v1/command",
+    "getCommandsRequest": "/api/v1/getCommands"
 }
