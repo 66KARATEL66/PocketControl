@@ -49,3 +49,5 @@ example
 
 .venv/
 __pycache__/
+
+certs/
