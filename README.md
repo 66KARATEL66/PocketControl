@@ -117,8 +117,7 @@ dependencies, Expo starter material, icons, logos, and other external assets
 remain under their respective licenses and are not relicensed by PocketControl.
 See [`THIRD-PARTY-LICENSES.md`](THIRD-PARTY-LICENSES.md) for the audit,
 attribution requirements, source links, compatibility notes, and resources
-requiring manual verification. [`LICENCE.txt`](LICENCE.txt) is retained as a
-short pointer for older links.
+requiring manual verification.
 
 ## Limitations and known issues
 
