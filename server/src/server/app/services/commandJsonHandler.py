@@ -1,26 +1,21 @@
 import json
-from pydantic import BaseModel
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-COMMAND_FILE = BASE_DIR / "data" / "command.json"
+from server.data.command import CommandDefinition
 
-DATA = []
+COMMAND_FILE = Path(__file__).resolve().parents[2] / "data" / "commands.json"
 
-class Command(BaseModel):
-    id: int
-    command: str
 
-def json_decoder():
+def load_commands() -> list[CommandDefinition]:
     try:
-        with open(COMMAND_FILE, "r", encoding='utf-8') as f:
-            data = json.load(f)
+        with COMMAND_FILE.open("r", encoding="utf-8") as file:
+            return [CommandDefinition(**item) for item in json.load(file)]
+    except (OSError, json.JSONDecodeError, ValueError) as error:
+        from server.app.services.logger import logger
 
-        return [Command(**e) for e in data] # id=e["id"], command=e["command"]
-
-    except json.JSONDecodeError as e:
-        print(e)
+        logger.error("Failed to load command configuration: %s", error)
         return []
 
-DATA = json_decoder()
-    
+
+DATA = load_commands()
+COMMANDS_BY_NAME = {command.command: command for command in DATA}

@@ -47,6 +47,24 @@ export const styles = StyleSheet.create({
 
     scrollView: {},
 
+    commandListContainer: {
+        flex: 1,
+        alignItems: "center",
+    },
+
+    commandScreen: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+    },
+
+    commandScreenText: {
+        color: "#E6EDF3",
+        fontSize: 18,
+        textAlign: "center",
+    },
+
     scrollViewerButton: {
         width: "40%",
         margin: 20,
@@ -81,7 +99,7 @@ export const styles = StyleSheet.create({
     },
 
     trackZoneText: {
-        fontSize: 16,
+        fontSize: 18,
         color: "white",
         textAlign: "center"
     },
@@ -93,6 +111,20 @@ export const styles = StyleSheet.create({
         backgroundColor: "#2e343d",
         alignContent: "center",
         justifyContent: "center"
+    },
+
+    trackZoneActive: {
+        flex: 1,
+        alignItems: "center",
+        alignContent: "center",
+        justifyContent: "center",
+        margin: 10,
+    },
+
+    connectionStatus: {
+        color: "#8B949E",
+        fontSize: 14,
+        marginBottom: 12,
     },
 
     settingsPage: {
@@ -120,6 +152,12 @@ export const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 18,
         color: "white"
+    },
+
+    settingsStatus: {
+        color: "#E6EDF3",
+        fontSize: 20,
+        marginBottom: 20,
     },
 
     scannerOverlay: {

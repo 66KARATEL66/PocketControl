@@ -1,14 +1,7 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { View, Text} from 'react-native';
-import { MainPage } from './mainpage';
+import { ScrollView } from '../component/ScrollView'
 
 export default function HomeScreen() {
   return (
-    <MainPage></MainPage>
+    <ScrollView /> 
   )
 }
-
-const styles = StyleSheet.create({
-  
-});

@@ -1,5 +1,6 @@
 import pyautogui
 import os
+from server.app.core.mouseControl import mouseControl as mouseControlCommand
 
 def volume_up():
     pyautogui.press("volumeup")
@@ -7,8 +8,8 @@ def volume_up():
 def volume_down():
     pyautogui.press("volumedown")
 
-def move_mouse(x: int, y: int):
-    pyautogui.moveTo(x, y)
+def mouseControl(x: int, y: int, isClick: bool):
+    mouseControlCommand(x, y, isClick)
 
 def open_url(url: str):
     os.startfile(url)

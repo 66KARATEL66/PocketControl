@@ -1,51 +1,44 @@
+import json
+from pathlib import Path
+
 from server.app.auth.auth import AUTHDATA
 from server.app.services.logger import logger
-from pathlib import Path
-import json
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-COMMAND_FILE = BASE_DIR / "data" / "whitelist.json"
+WHITELIST_FILE = Path(__file__).resolve().parents[2] / "data" / "whitelist.json"
 
-def tokenVerification(data): # token, serial number, ip-address
-    if(data["token"] != AUTHDATA["token"]):
-        logger.error({
-            "device_id": data["device_id"],
-            "ip_address": data["ip_address"],
-            "success": False,
-            "reason": "invalid token"
-        })
-        return False
 
-    device = data["device_id"]
-
-    whitelist = readFile()
-
-    # print("DEVICE:", repr(device))
-    # print("WHITELIST:", repr(whitelist))
-    # print("DEVICE TYPE:", type(device))
-    # print("WHITELIST TYPE:", type(whitelist))
-    # print("ALREADY EXISTS:", device in whitelist)
-
-    if device not in whitelist:
-        whitelist.append(device)
-        writeFile(whitelist)
-
-    logger.info("Device is added to whitelist")
-    return True
-
-def readFile():
+def read_file() -> list[str]:
     try:
-        with open(COMMAND_FILE, "r", encoding='utf-8') as f:
-            return json.load(f)
-        
-    except Exception as e:
-        logger.error(f"Failed to read whitelist: {e}")
+        with WHITELIST_FILE.open("r", encoding="utf-8") as file:
+            value = json.load(file)
+        return value if isinstance(value, list) else []
+    except (OSError, json.JSONDecodeError) as error:
+        logger.error("Failed to read whitelist: %s", error)
         return []
 
-def writeFile(data):
-    try:
-        with open(COMMAND_FILE, "w", encoding='utf-8') as f:
-            json.dump(data, f, indent=4)
 
-    except Exception as e:
-        return f"Error open/writing file: {e}"
+def write_file(devices: list[str]) -> None:
+    try:
+        with WHITELIST_FILE.open("w", encoding="utf-8") as file:
+            json.dump(sorted(set(devices)), file, indent=4)
+    except OSError as error:
+        logger.error("Failed to write whitelist: %s", error)
+        raise
+
+
+def is_authorized(device_id: str) -> bool:
+    return bool(device_id) and device_id in read_file()
+
+
+def verify_token(token: str, device_id: str, ip_address: str) -> bool:
+    if token != AUTHDATA["token"]:
+        logger.warning("Authentication rejected for device %s from %s", device_id, ip_address)
+        return False
+
+    devices = read_file()
+    if device_id not in devices:
+        devices.append(device_id)
+        write_file(devices)
+
+    logger.info("Authentication succeeded for device %s from %s", device_id, ip_address)
+    return True
